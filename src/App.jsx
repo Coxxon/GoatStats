@@ -37,7 +37,7 @@ const App = () => {
 
   const loadData = async () => {
     if (isFetching.current) return;
-    console.log("🚀 v1.1.4 - Démarrage du chargement...");
+    console.log("🚀 v1.1.5 - Démarrage du chargement...");
     isFetching.current = true;
     setLoading(true);
     setError(null);
@@ -88,8 +88,18 @@ const App = () => {
 
   const handleSaveConfig = (e) => {
     e.preventDefault();
-    localStorage.setItem('goat_token', token);
-    localStorage.setItem('goat_site', siteCode);
+    const cleanToken = token.trim();
+    const cleanSite = siteCode.trim();
+
+    if (!cleanToken || !cleanSite) {
+      setError("Veuillez remplir les deux champs.");
+      return;
+    }
+
+    localStorage.setItem('goat_token', cleanToken);
+    localStorage.setItem('goat_site', cleanSite);
+    setToken(cleanToken);
+    setSiteCode(cleanSite);
     setIsConfigured(true);
   };
 
@@ -105,26 +115,27 @@ const App = () => {
 
           <form onSubmit={handleSaveConfig} className="space-y-4">
             <div className="space-y-1">
-              <label className="text-xs font-semibold text-slate-500 uppercase">Code du site (ex: allanlg)</label>
+              <label className="text-xs font-semibold text-slate-500 uppercase">Code du site (GoatCounter)</label>
               <input
                 type="text"
                 className="w-full bg-slate-900/50 border border-slate-700 p-3 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none"
                 value={siteCode}
                 onChange={(e) => setSiteCode(e.target.value)}
-                placeholder="allanlg"
+                placeholder="Ex: allanlg"
                 required
               />
             </div>
             <div className="space-y-1">
-              <label className="text-xs font-semibold text-slate-500 uppercase">Clé API (Token)</label>
+              <label className="text-xs font-semibold text-slate-500 uppercase">Clé API GoatCounter (Token)</label>
               <input
                 type="password"
                 className="w-full bg-slate-900/50 border border-slate-700 p-3 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none"
                 value={token}
                 onChange={(e) => setToken(e.target.value)}
-                placeholder="1wea..."
+                placeholder="Collez votre clé 1weag..."
                 required
               />
+              <p className="text-[10px] text-slate-500 mt-1">Générez une clé sur votre compte GoatCounter avec "Read Statistics".</p>
             </div>
             <button className="w-full bg-indigo-600 hover:bg-indigo-700 py-3 rounded-lg font-bold transition-colors">
               Démarrer le Dashboard
@@ -140,7 +151,7 @@ const App = () => {
       <header className="flex justify-between items-center mb-8">
         <div>
           <h1 className="text-2xl font-bold bg-gradient-to-r from-white to-slate-500 bg-clip-text text-transparent">
-            GoatStats <span className="text-[10px] text-slate-600 font-mono">v1.1.4</span>
+            GoatStats <span className="text-[10px] text-slate-600 font-mono">v1.1.5</span>
           </h1>
           <div className="flex items-center gap-2">
             <p className="text-slate-500 text-sm">{siteCode}.goatcounter.com</p>
@@ -178,8 +189,8 @@ const App = () => {
           </p>
           <div className="mt-3 text-[11px] opacity-80 border-t border-red-500/30 pt-2">
             <strong>Checklist :</strong><br />
-            1. Le proxy local (/proxy-goat) est-il actif ? (Redémarrez le terminal si besoin)<br />
-            2. Code site '<strong>{siteCode}</strong>' est-il correct ?<br />
+            1. Vérifiez que votre Clé API (Token) est toujours active sur GoatCounter.<br />
+            2. Vérifiez que le "Code du site" est bien <strong>{siteCode}</strong>.<br />
           </div>
         </div>
       )}
