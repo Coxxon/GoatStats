@@ -37,7 +37,7 @@ const App = () => {
 
   const loadData = async () => {
     if (isFetching.current) return;
-    console.log("🚀 v1.1.2 - Démarrage du chargement...");
+    console.log("🚀 v1.1.3 - Démarrage du chargement...");
     isFetching.current = true;
     setLoading(true);
     setError(null);
@@ -140,7 +140,7 @@ const App = () => {
       <header className="flex justify-between items-center mb-8">
         <div>
           <h1 className="text-2xl font-bold bg-gradient-to-r from-white to-slate-500 bg-clip-text text-transparent">
-            GoatStats <span className="text-[10px] text-slate-600 font-mono">v1.1.2</span>
+            GoatStats <span className="text-[10px] text-slate-600 font-mono">v1.1.3</span>
           </h1>
           <div className="flex items-center gap-2">
             <p className="text-slate-500 text-sm">{siteCode}.goatcounter.com</p>
