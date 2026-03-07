@@ -9,7 +9,8 @@ export default defineConfig({
     react(),
     tailwindcss(),
     /* VitePWA({
-      selfDestroying: true,
+      registerType: 'autoUpdate',
+      includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'mask-icon.svg'],
       manifest: {
         name: 'GoatStats',
         short_name: 'GoatStats',
