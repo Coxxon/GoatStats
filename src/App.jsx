@@ -30,6 +30,16 @@ const App = () => {
   });
 
   useEffect(() => {
+    // Force la désinstallation de tout ancien Service Worker (PWA) qui pourrait bloquer le cache
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.getRegistrations().then(registrations => {
+        for (let registration of registrations) {
+          registration.unregister();
+          console.log('🚀 v1.1.6 - Service Worker désinstallé pour nettoyage');
+        }
+      });
+    }
+
     if (isConfigured) {
       loadData();
     }
@@ -37,7 +47,7 @@ const App = () => {
 
   const loadData = async () => {
     if (isFetching.current) return;
-    console.log("🚀 v1.1.5 - Démarrage du chargement...");
+    console.log("🚀 v1.1.6 - Démarrage du chargement...");
     isFetching.current = true;
     setLoading(true);
     setError(null);
@@ -151,7 +161,7 @@ const App = () => {
       <header className="flex justify-between items-center mb-8">
         <div>
           <h1 className="text-2xl font-bold bg-gradient-to-r from-white to-slate-500 bg-clip-text text-transparent">
-            GoatStats <span className="text-[10px] text-slate-600 font-mono">v1.1.5</span>
+            GoatStats <span className="text-[10px] text-slate-600 font-mono">v1.1.6</span>
           </h1>
           <div className="flex items-center gap-2">
             <p className="text-slate-500 text-sm">{siteCode}.goatcounter.com</p>

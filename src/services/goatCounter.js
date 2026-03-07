@@ -30,25 +30,26 @@ const getEndDate = () => {
     return d.toISOString().split('T')[0];
 };
 
+// Utilisation du nouveau chemin proxy pour forcer l'invalidation du cache
+const PROXY_PATH = '/api-v1-proxy';
+
 // Totaux globaux
 export const fetchStats = async (token) => {
-    const url = `/api/v0/stats/total?start=${getStartDate()}&end=${getEndDate()}`;
+    const url = `${PROXY_PATH}/v0/stats/total?start=${getStartDate()}&end=${getEndDate()}`;
     const response = await fetch(url, { headers: getHeaders(token) });
     return handleResponse(response);
 };
 
 // Historique pour le graphique
 export const fetchPageViews = async (token) => {
-    // daily=1 pour avoir l'historique global par jour
-    const url = `/api/v0/stats/hits?start=${getStartDate()}&end=${getEndDate()}&daily=1`;
+    const url = `${PROXY_PATH}/v0/stats/hits?start=${getStartDate()}&end=${getEndDate()}&daily=1`;
     const response = await fetch(url, { headers: getHeaders(token) });
     return handleResponse(response);
 };
 
-// Top pages (par chemin)
+// Top pages
 export const fetchTopPages = async (token) => {
-    // Sans daily=1, /stats/hits renvoie les totaux par chemin
-    const url = `/api/v0/stats/hits?start=${getStartDate()}&end=${getEndDate()}`;
+    const url = `${PROXY_PATH}/v0/stats/hits?start=${getStartDate()}&end=${getEndDate()}`;
     const response = await fetch(url, { headers: getHeaders(token) });
     return handleResponse(response);
 };
