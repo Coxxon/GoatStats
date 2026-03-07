@@ -30,8 +30,8 @@ const getEndDate = () => {
     return d.toISOString().split('T')[0];
 };
 
-// Utilisation du nouveau chemin proxy pour forcer l'invalidation du cache
-const PROXY_PATH = '/api-v1-proxy';
+// Utilisation d'un nouveau chemin proxy pour forcer l'invalidation du cache serveur
+const PROXY_PATH = '/api-v2-proxy';
 
 // Totaux globaux
 export const fetchStats = async (token) => {
