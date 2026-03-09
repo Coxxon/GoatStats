@@ -47,7 +47,7 @@ const App = () => {
 
   const loadData = async () => {
     if (isFetching.current) return;
-    console.log("🚀 v1.1.9 - Démarrage du chargement...");
+    console.log("🚀 v1.1.10 - Démarrage du chargement...");
     isFetching.current = true;
     setLoading(true);
     setError(null);
@@ -61,12 +61,17 @@ const App = () => {
 
       console.log('✅ Résultats reçus:', { totalStats, hitsData, pagesData });
 
-      // L'historique global pour le graphique se trouve dans totalStats.history en v0
-      // Chaque entrée contient { day: "YYYY-MM-DD", daily: 123 }
-      const chartHistory = totalStats.history || [];
+      // Tentative de récupération de l'historique :
+      // 1. D'abord dans totalStats.history
+      // 2. Sinon dans le premier item de hitsData (qui contient souvent l'historique global ou le plus populaire)
+      let chartHistory = totalStats.history || [];
 
-      // Top Pages se trouve dans pagesData.hits ou pagesData.pages (format hits: [{path, count}])
-      const topPagesList = pagesData.hits || pagesData.pages || (Array.isArray(pagesData) ? pagesData : []);
+      if (chartHistory.length === 0 && Array.isArray(hitsData) && hitsData.length > 0) {
+        chartHistory = hitsData[0].history || [];
+      }
+
+      // Top Pages (hitsData est un tableau en v0)
+      const topPagesList = Array.isArray(hitsData) ? hitsData : (hitsData.hits || []);
 
       setStats({
         total: totalStats.total || { visitors: '0', views: '0' },
@@ -84,7 +89,17 @@ const App = () => {
   };
 
   const chartData = {
-    labels: stats.hits.map(h => new Date(h.day).toLocaleDateString(undefined, { weekday: 'short' })),
+    labels: stats.hits.map((h, i) => {
+      try {
+        if (!h.day) return i + 1;
+        // Remplacement de '-' par '/' pour la compatibilité iOS/Safari/Mobile
+        const dateObj = new Date(h.day.replace(/-/g, '/'));
+        if (isNaN(dateObj.getTime())) return h.day;
+        return dateObj.toLocaleDateString(undefined, { weekday: 'short', day: 'numeric' });
+      } catch (e) {
+        return h.day || i + 1;
+      }
+    }),
     datasets: [
       {
         label: 'Visiteurs uniques',
@@ -162,7 +177,7 @@ const App = () => {
       <header className="flex justify-between items-center mb-8">
         <div>
           <h1 className="text-2xl font-bold bg-gradient-to-r from-white to-slate-500 bg-clip-text text-transparent">
-            GoatStats <span className="text-[10px] text-slate-600 font-mono">v1.1.9</span>
+            GoatStats <span className="text-[10px] text-slate-600 font-mono">v1.1.10</span>
           </h1>
           <div className="flex items-center gap-2">
             <p className="text-slate-500 text-sm">{siteCode}.goatcounter.com</p>
@@ -237,8 +252,9 @@ const App = () => {
                     grid: { color: 'rgba(255,255,255,0.05)' },
                     ticks: {
                       color: '#64748b',
-                      stepSize: 1, // Force les nombres entiers
-                      precision: 0
+                      stepSize: 1,
+                      precision: 0,
+                      callback: (value) => value // Assure l'affichage des entiers
                     },
                     beginAtZero: true
                   },
