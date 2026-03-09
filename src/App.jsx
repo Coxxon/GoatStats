@@ -47,7 +47,7 @@ const App = () => {
 
   const loadData = async () => {
     if (isFetching.current) return;
-    console.log("🚀 v1.1.7 - Démarrage du chargement...");
+    console.log("🚀 v1.1.8 - Démarrage du chargement...");
     isFetching.current = true;
     setLoading(true);
     setError(null);
@@ -62,9 +62,12 @@ const App = () => {
       console.log('✅ Résultats reçus:', { totalStats, hitsData, pagesData });
 
       // Historique graphique (daily=1)
-      const chartHistory = hitsData.history || hitsData.hits || (Array.isArray(hitsData) ? hitsData : []);
+      console.log('✅ Résultats reçus:', { totalStats, hitsData, pagesData });
 
-      // Top Pages (sans daily)
+      // L'historique global pour le graphique se trouve dans totalStats.history en v0
+      const chartHistory = totalStats.history || [];
+
+      // Top Pages se trouve dans pagesData.hits ou pagesData.pages
       const topPagesList = pagesData.hits || pagesData.pages || (Array.isArray(pagesData) ? pagesData : []);
 
       setStats({
@@ -161,7 +164,7 @@ const App = () => {
       <header className="flex justify-between items-center mb-8">
         <div>
           <h1 className="text-2xl font-bold bg-gradient-to-r from-white to-slate-500 bg-clip-text text-transparent">
-            GoatStats <span className="text-[10px] text-slate-600 font-mono">v1.1.7</span>
+            GoatStats <span className="text-[10px] text-slate-600 font-mono">v1.1.8</span>
           </h1>
           <div className="flex items-center gap-2">
             <p className="text-slate-500 text-sm">{siteCode}.goatcounter.com</p>
