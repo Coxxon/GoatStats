@@ -47,7 +47,7 @@ const App = () => {
 
   const loadData = async () => {
     if (isFetching.current) return;
-    console.log("🚀 v1.1.8 - Démarrage du chargement...");
+    console.log("🚀 v1.1.9 - Démarrage du chargement...");
     isFetching.current = true;
     setLoading(true);
     setError(null);
@@ -61,13 +61,11 @@ const App = () => {
 
       console.log('✅ Résultats reçus:', { totalStats, hitsData, pagesData });
 
-      // Historique graphique (daily=1)
-      console.log('✅ Résultats reçus:', { totalStats, hitsData, pagesData });
-
       // L'historique global pour le graphique se trouve dans totalStats.history en v0
+      // Chaque entrée contient { day: "YYYY-MM-DD", daily: 123 }
       const chartHistory = totalStats.history || [];
 
-      // Top Pages se trouve dans pagesData.hits ou pagesData.pages
+      // Top Pages se trouve dans pagesData.hits ou pagesData.pages (format hits: [{path, count}])
       const topPagesList = pagesData.hits || pagesData.pages || (Array.isArray(pagesData) ? pagesData : []);
 
       setStats({
@@ -89,8 +87,8 @@ const App = () => {
     labels: stats.hits.map(h => new Date(h.day).toLocaleDateString(undefined, { weekday: 'short' })),
     datasets: [
       {
-        label: 'Vues',
-        data: stats.hits.map(h => h.count),
+        label: 'Visiteurs uniques',
+        data: stats.hits.map(h => h.daily), // Utilisation de h.daily pour l'API v0
         borderColor: 'rgb(99, 102, 241)',
         backgroundColor: 'rgba(99, 102, 241, 0.5)',
         tension: 0.4,
@@ -164,7 +162,7 @@ const App = () => {
       <header className="flex justify-between items-center mb-8">
         <div>
           <h1 className="text-2xl font-bold bg-gradient-to-r from-white to-slate-500 bg-clip-text text-transparent">
-            GoatStats <span className="text-[10px] text-slate-600 font-mono">v1.1.8</span>
+            GoatStats <span className="text-[10px] text-slate-600 font-mono">v1.1.9</span>
           </h1>
           <div className="flex items-center gap-2">
             <p className="text-slate-500 text-sm">{siteCode}.goatcounter.com</p>
@@ -235,7 +233,15 @@ const App = () => {
                 maintainAspectRatio: false,
                 plugins: { legend: { display: false } },
                 scales: {
-                  y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#64748b' } },
+                  y: {
+                    grid: { color: 'rgba(255,255,255,0.05)' },
+                    ticks: {
+                      color: '#64748b',
+                      stepSize: 1, // Force les nombres entiers
+                      precision: 0
+                    },
+                    beginAtZero: true
+                  },
                   x: { grid: { display: false }, ticks: { color: '#64748b' } }
                 }
               }}
